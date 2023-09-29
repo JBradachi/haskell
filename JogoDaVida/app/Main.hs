@@ -1,6 +1,6 @@
 module Main where
 
-import Data.Matrix (Matrix, fromLists, prettyMatrix)
+import Data.Matrix (Matrix, fromLists, prettyMatrix, toLists)
 import qualified Data.Matrix as M
 import Data.Maybe (fromMaybe)
 
@@ -8,7 +8,7 @@ lerInicial :: String -> IO (Matrix Bool)
 lerInicial fp = do
     texto <- readFile fp
     let linhas = lines texto -- lines junta 
-    let booleanos = map (map (=='#')) linhas
+    let booleanos = map (map (== '#')) linhas
     return (fromLists booleanos)
 
 atualizar :: Matrix Bool -> Matrix Bool
@@ -33,5 +33,11 @@ main = do
     run m
     where 
         run m = do
-            putStrLn (prettyMatrix m)
+            putStrLn (mostraMatriz m)
             run (atualizar m)
+
+mostraMatriz :: Matrix Bool -> String
+mostraMatriz m = foldr (\a b -> a ++ "\n" ++ b) "" strings
+    where
+        linhas = (toLists m)
+        strings = map (map (\v -> if v then '#' else '.')) linhas
